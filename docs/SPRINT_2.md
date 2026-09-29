@@ -286,4 +286,19 @@ Command (from the backend folder): `npm test`
 RESULT_TO_BE_PASTED_AFTER_RUNNING_npm_test
 
 ## 8. Known Limitations and Sprint 3 Backlog
-(to be added)
+### Known limitations
+
+- Each product has one canonical category. Many-to-many categories are not supported yet.
+- There is no separate price override or sale price. Each SKU has one price.
+- Administrator login uses a simple seeded admin account. No password reset or multi-admin management yet.
+- Category cycle detection is done in the API. The database only blocks a category being its own parent.
+- Dynamic specifications, asset upload and public catalog reads are not implemented (out of scope for Sprint 2).
+
+### Sprint 3 backlog
+
+1. Dynamic specifications (validated JSONB or EAV tables, as chosen in Sprint 1).
+2. Asset upload and image management for products and variants.
+3. Public catalog reads: product list, product detail, category browsing.
+4. Keyword search and category filtering.
+5. Publication rules (a product can only be published with at least one active SKU).
+6. Catalog-to-cart readiness: Cart_Items and Order_Items will reference SKU ids from this sprint and must not duplicate product or pricing logic.
