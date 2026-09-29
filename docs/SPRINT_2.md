@@ -186,7 +186,16 @@ PATCH /api/v1/admin/skus/1
 Response 400:
 
 { "error": { "code": "INVALID_STOCK", "message": "Stock quantity cannot be negative" } }
+### Request fields and response shapes for the remaining routes
 
+| Route | Request fields | Response shape |
+|---|---|---|
+| PATCH /products/:id | name, slug, description, status (draft, active or inactive), category_id. All optional. | 200: the updated product object |
+| GET /products | none | 200: { "data": [ product objects ] } |
+| GET /categories | none | 200: { "data": [ category objects, each with a "children" list ] } |
+| PATCH /skus/:id | price (0 or more), stock_quantity (0 or more), is_active. All optional. | 200: the updated SKU object |
+
+Validation errors: 400 for a missing or invalid field, 409 for a duplicate slug or SKU code, 404 when the id does not exist.
 ## 5. Data Integrity and Authorization Decisions
 (to be added)
 
