@@ -123,7 +123,69 @@ erDiagram
 - One product has many assets (1:N).
 - One SKU appears in many cart items and order items (1:N), so Sprint 3 links to SKU identity, not to product pricing.
 ## 4. Administration Routes
-(to be added)
+All routes are under /api/v1/admin and require the header `Authorization: Bearer <token>` of an administrator. No token returns 401. A non-admin token returns 403.
+
+| Method | Route | Purpose | Success | Errors |
+|---|---|---|---|---|
+| POST | /api/v1/admin/categories | Create a category | 201 | 400, 401, 403, 409 |
+| GET | /api/v1/admin/categories | Return the category tree | 200 | 401, 403 |
+| POST | /api/v1/admin/products | Create a draft product | 201 | 400, 401, 403, 409 |
+| PATCH | /api/v1/admin/products/:id | Update product content or status | 200 | 400, 401, 403, 404, 409 |
+| GET | /api/v1/admin/products | List products (admin view) | 200 | 401, 403 |
+| POST | /api/v1/admin/products/:id/skus | Add a SKU to a product | 201 | 400, 401, 403, 404, 409 |
+| PATCH | /api/v1/admin/skus/:id | Update price, stock or active status | 200 | 400, 401, 403, 404 |
+
+### Error format (same for every route)
+
+{ "error": { "code": "DUPLICATE_SLUG", "message": "A product with this slug already exists" } }
+
+### Example 1: Create a category
+
+Request:
+
+POST /api/v1/admin/categories
+{ "name": "Clothing", "slug": "clothing", "parent_id": null }
+
+Response 201:
+
+{ "id": 1, "name": "Clothing", "slug": "clothing", "parent_id": null, "is_active": true }
+
+### Example 2: Create a product
+
+Request fields: name (required), slug (required, unique), description (optional), category_id (required).
+
+POST /api/v1/admin/products
+{ "name": "Blue Polo Shirt", "slug": "blue-polo-shirt", "description": "Cotton polo", "category_id": 2 }
+
+Response 201:
+
+{ "id": 1, "name": "Blue Polo Shirt", "slug": "blue-polo-shirt", "status": "draft", "category_id": 2 }
+
+### Example 3: Add a SKU
+
+Request fields: variant_id (required), code (required, unique), price (required, 0 or more), stock_quantity (0 or more).
+
+POST /api/v1/admin/products/1/skus
+{ "variant_id": 1, "code": "POLO-BLU-M", "price": "1500.00", "stock_quantity": 10 }
+
+Response 201:
+
+{ "id": 1, "variant_id": 1, "code": "POLO-BLU-M", "price": "1500.00", "stock_quantity": 10, "is_active": true }
+
+### Example 4: Duplicate SKU rejected
+
+Response 409:
+
+{ "error": { "code": "DUPLICATE_SKU", "message": "SKU code already exists" } }
+
+### Example 5: Negative stock rejected
+
+PATCH /api/v1/admin/skus/1
+{ "stock_quantity": -5 }
+
+Response 400:
+
+{ "error": { "code": "INVALID_STOCK", "message": "Stock quantity cannot be negative" } }
 
 ## 5. Data Integrity and Authorization Decisions
 (to be added)
