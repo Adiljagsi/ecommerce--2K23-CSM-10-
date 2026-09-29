@@ -11,7 +11,85 @@ Out of scope (Sprint 3 or later): dynamic specifications, asset upload, public s
 This sprint reuses the Sprint 1 stack (React, Node.js with Express, PostgreSQL) and extends the Sprint 1 ERD. See [SPRINT_1.md](SPRINT_1.md).
 
 ## 3. ERD and Data Dictionary
-(to be added)
+```mermaid
+erDiagram
+    CATEGORIES ||--o{ CATEGORIES : "parent of"
+    CATEGORIES ||--o{ PRODUCTS : contains
+    PRODUCTS ||--o{ VARIANTS : has
+    VARIANTS ||--o{ SKUS : materializes
+    PRODUCTS ||--o{ ASSETS : displays
+    USERS ||--o{ CARTS : owns
+    CARTS ||--o{ CART_ITEMS : contains
+    SKUS ||--o{ CART_ITEMS : selected_as
+    USERS ||--o{ ORDERS : places
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    SKUS ||--o{ ORDER_ITEMS : sold_as
+
+    CATEGORIES {
+        int id PK
+        int parent_id FK
+        varchar name
+        varchar slug UK
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    PRODUCTS {
+        int id PK
+        int category_id FK
+        varchar name
+        varchar slug UK
+        text description
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+    VARIANTS {
+        int id PK
+        int product_id FK
+        jsonb option_values
+    }
+    SKUS {
+        int id PK
+        int variant_id FK
+        varchar code UK
+        numeric price
+        int stock_quantity
+        boolean is_active
+    }
+    ASSETS {
+        int id PK
+        int product_id FK
+        varchar storage_key
+        varchar role
+        varchar alt_text
+        int sort_order
+    }
+    USERS {
+        int id PK
+    }
+    CARTS {
+        int id PK
+        int user_id FK
+    }
+    CART_ITEMS {
+        int id PK
+        int cart_id FK
+        int sku_id FK
+        int quantity
+    }
+    ORDERS {
+        int id PK
+        int user_id FK
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int sku_id FK
+        int quantity
+        numeric unit_price
+    }
+```
 
 ## 4. Administration Routes
 (to be added)
