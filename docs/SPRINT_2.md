@@ -263,7 +263,27 @@ Blue Polo Shirt has 3 variants but only 2 SKUs. The XL combination is not create
 All requests use the header `Authorization: Bearer [REDACTED]`.
 
 ## 7. Test Strategy, Command and Result
-(to be added)
+### Test strategy
+
+Tests use Jest and Supertest against a separate test database. Each major business rule has at least one success test and one rejection test.
+
+Command (from the backend folder): `npm test`
+
+| Area | Success test | Rejection test |
+|---|---|---|
+| Product creation | Product with required fields returns 201 | Missing name returns 400 |
+| SKU creation | SKU with code, price and stock returns 201 | Missing price returns 400 |
+| Duplicate slug | First product saved | Second product with same slug returns 409 |
+| Duplicate SKU code | First SKU saved | Second SKU with same code returns 409 |
+| Category hierarchy | Child category under a parent returns 201 | Making a category its own ancestor returns 400 |
+| Stock rule | Updating stock to 0 or more returns 200 | Updating stock to -5 returns 400 |
+| Price rule | Price "1500.00" is accepted | Negative price returns 400 |
+| Variant/SKU combination | Only existing combinations have SKUs | No SKU is auto-created for a missing combination |
+| Authorization | Admin token returns 200 or 201 | No token returns 401, non-admin token returns 403 |
+
+### Test result
+
+RESULT_TO_BE_PASTED_AFTER_RUNNING_npm_test
 
 ## 8. Known Limitations and Sprint 3 Backlog
 (to be added)
