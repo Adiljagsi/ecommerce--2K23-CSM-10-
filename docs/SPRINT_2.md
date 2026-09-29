@@ -197,7 +197,28 @@ Response 400:
 
 Validation errors: 400 for a missing or invalid field, 409 for a duplicate slug or SKU code, 404 when the id does not exist.
 ## 5. Data Integrity and Authorization Decisions
-(to be added)
+### Authorization
+
+Every /api/v1/admin route passes through an authentication middleware that verifies the JWT and then checks that the user's role is "admin". A missing or invalid token returns 401. A valid token from a non-admin user returns 403. No admin write operation runs before this check.
+
+### Integrity rules enforced by the database
+
+- Slugs (categories, products) are UNIQUE.
+- SKU code is UNIQUE.
+- Price is NUMERIC(10,2) with CHECK price >= 0. Floating-point money is not used.
+- Stock quantity has CHECK stock_quantity >= 0.
+- Foreign keys have explicit delete rules: category to product is RESTRICT, product to variant is CASCADE, variant to SKU is CASCADE.
+- A category cannot be its own parent (CHECK id <> parent_id). Longer cycles are rejected by the API before saving.
+
+### Business rule decisions
+
+1. **Draft product with no SKU? Published product with no SKU?** A draft product may have no SKU because the admin is still preparing it. A product cannot become active unless it has at least one active SKU.
+2. **One category or many?** One canonical category per product. This keeps the category tree and product listing simple. Many-to-many categories can be added in a later sprint.
+3. **Parent category deactivated?** All its child categories are deactivated too. Products stay in the database but are not shown publicly while their category is inactive. Nothing is deleted.
+4. **Out-of-stock SKU in a public response?** The SKU row still exists with stock_quantity 0 and is returned with "in_stock": false. It is not hidden and not deleted.
+5. **Same price? Price override?** Two SKUs can share a price because price is not unique. In Sprint 2 each SKU has its own single price. There is no separate override; changing a SKU price is done by updating that SKU.
+6. **What prevents negative stock and duplicate SKU codes?** The database: CHECK (stock_quantity >= 0) and UNIQUE (code). The API also validates first and returns a clear 400 or 409 instead of a server error.
+7. **Deactivated product referenced by a future cart or order?** Rows are never hard-deleted (RESTRICT). Old orders keep working because Order_Items stores the unit_price at purchase time. A cart item that points to a deactivated SKU is marked unavailable.
 
 ## 6. Seed Data and Demonstration
 (to be added)
