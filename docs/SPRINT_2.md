@@ -221,7 +221,46 @@ Every /api/v1/admin route passes through an authentication middleware that verif
 7. **Deactivated product referenced by a future cart or order?** Rows are never hard-deleted (RESTRICT). Old orders keep working because Order_Items stores the unit_price at purchase time. A cart item that points to a deactivated SKU is marked unavailable.
 
 ## 6. Seed Data and Demonstration
-(to be added)
+### Seed data
+
+Command (from the backend folder): `npm run seed`
+
+The seed script clears the catalog tables and re-creates the same data every time, so it works on a clean database.
+
+**Category tree (2 levels)**
+
+| id | Name | Parent |
+|---|---|---|
+| 1 | Clothing | none |
+| 2 | T-Shirts | Clothing |
+| 3 | Accessories | none |
+
+**Products, variants and SKUs**
+
+| Product | Category | Variant options | SKU code | Price | Stock |
+|---|---|---|---|---|---|
+| Blue Polo Shirt | T-Shirts | size M | POLO-BLU-M | 1500.00 | 10 |
+| Blue Polo Shirt | T-Shirts | size L | POLO-BLU-L | 1500.00 | 5 |
+| Blue Polo Shirt | T-Shirts | size XL | none (intentionally unavailable) | - | - |
+| Handmade Leather Wallet | Accessories | default | WALLET-BRN | 2200.00 | 8 |
+| Ceramic Mug | Accessories | default | MUG-WHT | 800.00 | 20 |
+
+Blue Polo Shirt has 3 variants but only 2 SKUs. The XL combination is not created as a fake zero-stock SKU (rule CAT04). In total: 3 products, 4 SKUs, 3 categories.
+
+### Demonstration (administrator flow)
+
+1. Log in as the seeded administrator and receive a token (token redacted below).
+2. Create a category:
+   POST /api/v1/admin/categories with { "name": "Home", "slug": "home" } returns 201.
+3. Create a product:
+   POST /api/v1/admin/products with { "name": "Cotton Cushion", "slug": "cotton-cushion", "category_id": 4 } returns 201 with status "draft".
+4. Add a SKU:
+   POST /api/v1/admin/products/4/skus with { "variant_id": 6, "code": "CUSH-RED", "price": "950.00", "stock_quantity": 12 } returns 201.
+5. Retrieve the records:
+   GET /api/v1/admin/products returns 200 with the new product in the list.
+   GET /api/v1/admin/categories returns 200 with the category tree.
+
+All requests use the header `Authorization: Bearer [REDACTED]`.
 
 ## 7. Test Strategy, Command and Result
 (to be added)
