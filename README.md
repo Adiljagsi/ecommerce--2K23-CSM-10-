@@ -27,5 +27,18 @@ Never commit the real `.env` file or any secrets.
 
 ## Current status
 
-Done: database schema (migration) and the Sprint 2 design document.
-Not finished yet: admin API routes, seed script and automated tests.
+## Run the seed data and tests
+
+Seed (creates 3 categories, 3 products, 4 SKUs and prints a demo admin token):
+`npm run seed`
+
+Tests need a separate test database, because they wipe the tables:
+1. `createdb ecommerce_test`
+2. `psql -d ecommerce_test -f backend/db/migrations/001_catalog.sql`
+3. Set `TEST_DATABASE_URL` in `backend/.env`
+4. Run `npm test`
+
+## Current status
+
+Implemented: database schema, admin routes (categories, products, variants, SKUs), JWT admin check, seed script and automated tests.
+Not yet verified: the code was written but the test suite has not been run on a local database yet, so no test result is claimed.
