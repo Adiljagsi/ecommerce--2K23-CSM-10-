@@ -196,6 +196,13 @@ Response 400:
 | PATCH /skus/:id | price (0 or more), stock_quantity (0 or more), is_active. All optional. | 200: the updated SKU object |
 
 Validation errors: 400 for a missing or invalid field, 409 for a duplicate slug or SKU code, 404 when the id does not exist.
+### Additional routes implemented
+
+| Method | Route | Purpose | Success | Errors |
+|---|---|---|---|---|
+| POST | /api/v1/admin/products/:id/variants | Add a variant to a product. Request: option_values (JSON object, for example {"size":"M"}). Response: the variant object. | 201 | 401, 403, 404 |
+| PATCH | /api/v1/admin/categories/:id | Update name, slug, parent_id or is_active. Rejects a category cycle (400, CATEGORY_CYCLE). Deactivating a parent also deactivates its children. | 200 | 400, 401, 403, 404, 409 |
+
 ## 5. Data Integrity and Authorization Decisions
 ### Authorization
 
