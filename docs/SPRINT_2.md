@@ -291,7 +291,7 @@ Command (from the backend folder): `npm test`
 
 ### Test result
 
-RESULT_TO_BE_PASTED_AFTER_RUNNING_npm_test
+Not yet run. The test suite was written but has not been executed against a local database at the time of submission. The result will be added after running `npm test` on a computer with Node.js and PostgreSQL.
 
 ## 8. Known Limitations and Sprint 3 Backlog
 ### Known limitations
