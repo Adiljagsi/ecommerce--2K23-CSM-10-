@@ -256,14 +256,15 @@ Blue Polo Shirt has 3 variants but only 2 SKUs. The XL combination is not create
 
 ### Demonstration (administrator flow)
 
-1. Log in as the seeded administrator and receive a token (token redacted below).
+1. Run npm run seed, which prints a demo admin token (token redacted below).
 2. Create a category:
    POST /api/v1/admin/categories with { "name": "Home", "slug": "home" } returns 201.
 3. Create a product:
    POST /api/v1/admin/products with { "name": "Cotton Cushion", "slug": "cotton-cushion", "category_id": 4 } returns 201 with status "draft".
-4. Add a SKU:
+4. Create a variant: POST /api/v1/admin/products/4/variants with { "option_values": { "color": "Red" } } returns 201 (variant id 6).
+5. Add a SKU:
    POST /api/v1/admin/products/4/skus with { "variant_id": 6, "code": "CUSH-RED", "price": "950.00", "stock_quantity": 12 } returns 201.
-5. Retrieve the records:
+6. Retrieve the records:
    GET /api/v1/admin/products returns 200 with the new product in the list.
    GET /api/v1/admin/categories returns 200 with the category tree.
 
