@@ -298,7 +298,7 @@ Not yet run. The test suite was written but has not been executed against a loca
 
 - Each product has one canonical category. Many-to-many categories are not supported yet.
 - There is no separate price override or sale price. Each SKU has one price.
-- Administrator login uses a simple seeded admin account. No password reset or multi-admin management yet.
+- There is no login route. The seed script prints a demo admin token signed with JWT_SECRET. Real admin login, password reset and multi-admin management are not implemented yet.
 - Category cycle detection is done in the API. The database only blocks a category being its own parent.
 - Dynamic specifications, asset upload and public catalog reads are not implemented (out of scope for Sprint 2).
 
